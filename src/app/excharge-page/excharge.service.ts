@@ -23,36 +23,21 @@ export class ExchargeService {
   constructor(private http: HttpClient) {}
 
   public testData() {
-    try {
-      return this.getData(this.requests[0]);
-    } catch(error) {
-      console.log(error)
-      try {
-        return this.getData(this.requests[1]);
-      } catch(error) {
-        console.log(error);
-      }
-    }
+    return this.testRequest$.pipe(
+      switchMap(() => this.getData(this.requests[this.index])),
+      tap(({error}) => {
+        if (error) {
+          if (this.index < this.requests.length) {
+            this.index++;
+          } else {
+            this.index = 0;
+          }
+        }
+
+        this.testRequest$.next();
+      })
+    );
   }
-
-  // ALTERNATIVE METHOD WITH SUBJECT
-
-  // public testData() {
-  //   return this.testRequest$.pipe(
-  //     switchMap(() => this.getData(this.requests[this.index])),
-  //     tap(({error}) => {
-  //       if (error) {
-  //         if (this.index < this.requests.length) {
-  //           this.index++;
-  //         } else {
-  //           this.index = 0;
-  //         }
-  //       }
-
-  //       this.testRequest$.next();
-  //     })
-  //   );
-  // }
 
   private getData({url, responseType}): Observable<any> {
     switch (responseType) {
