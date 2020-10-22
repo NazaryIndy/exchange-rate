@@ -18,7 +18,7 @@ export class ExchargePageComponent implements OnInit {
 
   ngOnInit(): void {
     this.subscription = timer(0, 10000).pipe(
-      switchMap(() => this.exchargeService.getData())
+      switchMap(() => this.exchargeService.testData())
     ).subscribe((result: ValCurs | Valute) => {
       this.getCorrectData(result);
     });
@@ -30,7 +30,7 @@ export class ExchargePageComponent implements OnInit {
 
   private getCorrectData(data) {
     if (data['ValCurs']) {
-      this.valute = data['ValCurs']['Valute']['EUR'];
+      this.valute = data['ValCurs']['Valute'].find(item => item['CharCode'] === 'EUR');
     } else {
       this.valute = data['Valute']['EUR'];
     }
