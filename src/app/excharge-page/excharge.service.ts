@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable, Subject } from 'rxjs';
-import { switchMap, tap, } from 'rxjs/operators';
+import { Observable } from 'rxjs';
+import { switchMap } from 'rxjs/operators';
 import { ValCurs, Valute } from '../models/data.interface';
 declare const require: any;
 
@@ -17,9 +17,6 @@ export class ExchargeService {
     { url: 'https://www.cbr-xml-daily.ru/daily_utf8.xml', responseType: 'text' }
   ];
 
-  private index = 0;
-  private testRequest$ = new Subject();
-
   constructor(private http: HttpClient) {}
 
   public testData() {
@@ -34,25 +31,6 @@ export class ExchargeService {
       }
     }
   }
-
-  // ALTERNATIVE METHOD WITH SUBJECT
-
-  // public testData() {
-  //   return this.testRequest$.pipe(
-  //     switchMap(() => this.getData(this.requests[this.index])),
-  //     tap(({error}) => {
-  //       if (error) {
-  //         if (this.index < this.requests.length) {
-  //           this.index++;
-  //         } else {
-  //           this.index = 0;
-  //         }
-  //       }
-
-  //       this.testRequest$.next();
-  //     })
-  //   );
-  // }
 
   private getData({url, responseType}): Observable<any> {
     switch (responseType) {
